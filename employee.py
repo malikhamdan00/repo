@@ -10,7 +10,7 @@ class employeeClass:
         self.root.config(bg="white")
         self.root.focus_force()
         # =====================================================
-        # All Variables
+        # ========================All Variables====================================================
         self.var_searchby=StringVar()
         self.var_searchtxt=StringVar()
         
@@ -25,25 +25,25 @@ class employeeClass:
         self.var_utype=StringVar()
         self.var_salary=StringVar()
         
-        # ====Search Frame====
+        # ================================Search Frame===============================================
         SearchFrame=LabelFrame(self.root,text="Search Employee",bg="white",font=("goudy old style",12,"bold"),bd=2,relief=RIDGE)
         SearchFrame.place(x=250,y=20,width=600,height=70)
         
-        # ====options====
+        # ================================options========================================================
         cmb_search=ttk.Combobox(SearchFrame,textvariable=self.var_searchby,values=("Select","Email","Name","Contact"),state='readonly',justify=CENTER,font=("goudy old style",15))
         cmb_search.place(x=10,y=10,width=180)
         cmb_search.current(0)
         
-        # ===Search Btn and txt Entry
+        # ================================Search Btn and txt Entry=============================================
         txt_search=Entry(SearchFrame,textvariable=self.var_searchtxt,font=("goudy old style",15),bg="lightyellow").place(x=200,y=10)
         btn_search=Button(SearchFrame,text="Search",font=("goudy old style",15),bg="#4caf50",fg="white",cursor="hand2").place(x=410,y=9,width=150,height=30)
         
         
-        # ====title====
+        # ====================================title=================================================
         title=Label(self.root,text="Employee Details",font=("goudy old style",15),bg="#0f4d7d",fg="white").place(x=50,y=100,width=1000)
         
-        # ===content===
-        # ===Row 1===
+        # ========================================content============================================
+        # ============================================Row 1============================================
         lbl_empid=Label(self.root,text="Emp ID",font=("goudy old style",15),bg="white").place(x=50,y=150)
         lbl_gender=Label(self.root,text="Gender",font=("goudy old style",15),bg="white").place(x=350,y=150)
         lbl_contact=Label(self.root,text="Contact",font=("goudy old style",15),bg="white").place(x=750,y=150)
@@ -54,7 +54,7 @@ class employeeClass:
         cmb_gender.current(0)
         txt_contact=Entry(self.root,textvariable=self.var_contact,font=("goudy old style",15),bg="lightyellow").place(x=850,y=150,width=180)
 
-        # ===Row 2===
+        # ============================================Row 2=============================================
         lbl_name=Label(self.root,text="Name",font=("goudy old style",15),bg="white").place(x=50,y=190)
         lbl_dob=Label(self.root,text="D.O.B",font=("goudy old style",15),bg="white").place(x=350,y=190)
         lbl_doj=Label(self.root,text="D.O.J",font=("goudy old style",15),bg="white").place(x=750,y=190)
@@ -63,7 +63,7 @@ class employeeClass:
         txt_dob=Entry(self.root,textvariable=self.var_dob,font=("goudy old style",15),bg="lightyellow").place(x=500,y=190,width=180)
         txt_doj=Entry(self.root,textvariable=self.var_doj,font=("goudy old style",15),bg="lightyellow").place(x=850,y=190,width=180)
         
-        # ===Row 3=====
+        # ==============================================Row 3=========================================
         lbl_email=Label(self.root,text="Email",font=("goudy old style",15),bg="white").place(x=50,y=230)
         lbl_pass=Label(self.root,text="Password",font=("goudy old style",15),bg="white").place(x=350,y=230)
         lbl_utype=Label(self.root,text="User Type",font=("goudy old style",15),bg="white").place(x=750,y=230)
@@ -74,7 +74,7 @@ class employeeClass:
         cmb_utype.place(x=850,y=230,width=180)
         cmb_utype.current(0)
         
-        # ===Row 4=====
+        # =========================================Row 4===============================================
         lbl_address=Label(self.root,text="Address",font=("goudy old style",15),bg="white").place(x=50,y=270)
         lbl_salary=Label(self.root,text="Salary",font=("goudy old style",15),bg="white").place(x=500,y=270)
 
@@ -84,19 +84,19 @@ class employeeClass:
         txt_salary=Entry(self.root,textvariable=self.var_salary,font=("goudy old style",15),bg="lightyellow").place(x=600,y=270,width=180)
         
         
-        # =====Buttons========
+        # ======================================================Buttons============================================
         btn_add=Button(self.root,text="Save",font=("goudy old style",15),bg="#2196f3",fg="white",cursor="hand2").place(x=500,y=305,width=110,height=28)
         btn_update=Button(self.root,text="Update",font=("goudy old style",15),bg="#4caf50",fg="white",cursor="hand2").place(x=620,y=305,width=110,height=28)
         btn_delete=Button(self.root,text="Delete",font=("goudy old style",15),bg="#f44336",fg="white",cursor="hand2").place(x=740,y=305,width=110,height=28)
         btn_clear=Button(self.root,text="Clear",font=("goudy old style",15),bg="#607d8b",fg="white",cursor="hand2").place(x=860,y=305,width=110,height=28)
 
 
-        # =======Employee Details========
-        # ==frame where details name are shown===
+        # =======================================================Employee Details====================================
+        # ========================================frame where details name are shown=============================
         emp_frame=Frame(self.root,bd=3,relief=RIDGE)
         emp_frame.place(x=0,y=350,relwidth=1,height=150)
         
-        # =====Scrol Details======
+        # ====================================================Scrol Details========================================
         scrolly=Scrollbar(emp_frame,orient=VERTICAL)
         scrollx=Scrollbar(emp_frame,orient=HORIZONTAL)
         
