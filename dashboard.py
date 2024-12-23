@@ -1,5 +1,6 @@
 from tkinter import *
 from PIL import Image, ImageTk
+from employee import employeeClass
 
 class IMS:
     def __init__(self, root):
@@ -35,7 +36,7 @@ class IMS:
         self.icon_side = PhotoImage(file="images/side.png")
         lbl_menu = Label(self.LeftMenu,text="Menu",font=("times new roman", 20),bg="#009688").pack(side=TOP,fill=X)
         # Employee-btn
-        btn_employee = Button(self.LeftMenu,text="Employee",image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
+        btn_employee = Button(self.LeftMenu,text="Employee",command=self.employee,image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # ==Supplier-btn==
         btn_supplier = Button(self.LeftMenu,text="Supplier",image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # ===category-btn==
@@ -66,7 +67,16 @@ class IMS:
         
         # ===Footer===
         lbl_footer= Label(self.root,text="IMS-Inventory Management System | Developed By Hamdan\nFor any Technical Issue Contact: +92-316-4780493",font=("times new roman", 12),bg="#4d636d",fg="white",).pack(side=BOTTOM,fill=X)
+        
+        
+# =================================================================================================================
+    def employee(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=employeeClass(self.new_win)
+
+
 # Initialize the GUI
-root = Tk()
-obj = IMS(root)
-root.mainloop()
+if __name__=="__main__":
+    root = Tk()
+    obj = IMS(root)
+    root.mainloop()
