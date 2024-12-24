@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 from employee import employeeClass
 from supplier import supplierClass
+from category import categoryClass
 class IMS:
     def __init__(self, root):
         self.root = root
@@ -40,7 +41,7 @@ class IMS:
         # ================================================Supplier-btn==============================================
         btn_supplier = Button(self.LeftMenu,text="Supplier",command=self.supplier,image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # ==================================================category-btn================================================
-        btn_category = Button(self.LeftMenu,text="Category",image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
+        btn_category = Button(self.LeftMenu,text="Category",command=self.category,image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # =====================================================product-btn===========================================
         btn_product = Button(self.LeftMenu,text="Product",image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # =======================================================sales-btn============================================
@@ -77,6 +78,11 @@ class IMS:
     def supplier(self):
         self.new_win=Toplevel(self.root)
         self.new_obj=supplierClass(self.new_win)
+        
+# ===========================================Function for Category menu======================================================
+    def category(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=categoryClass(self.new_win)
 
 # ============Initialize the GUI===========
 if __name__=="__main__":
