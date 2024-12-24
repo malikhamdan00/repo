@@ -1,7 +1,7 @@
 from tkinter import *
 from PIL import Image, ImageTk
 from employee import employeeClass
-
+from supplier import supplierClass
 class IMS:
     def __init__(self, root):
         self.root = root
@@ -38,7 +38,7 @@ class IMS:
         # =============================================Employee-btn=============================================
         btn_employee = Button(self.LeftMenu,text="Employee",command=self.employee,image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # ================================================Supplier-btn==============================================
-        btn_supplier = Button(self.LeftMenu,text="Supplier",image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
+        btn_supplier = Button(self.LeftMenu,text="Supplier",command=self.supplier,image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # ==================================================category-btn================================================
         btn_category = Button(self.LeftMenu,text="Category",image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # =====================================================product-btn===========================================
@@ -69,11 +69,14 @@ class IMS:
         lbl_footer= Label(self.root,text="IMS-Inventory Management System | Developed By Hamdan\nFor any Technical Issue Contact: +92-316-4780493",font=("times new roman", 12),bg="#4d636d",fg="white",).pack(side=BOTTOM,fill=X)
         
         
-# =================================================================================================================
+# ==========================================Function for employee enu=======================================================================
     def employee(self):
         self.new_win=Toplevel(self.root)
         self.new_obj=employeeClass(self.new_win)
-
+# ===========================================Function for supplier menu======================================================
+    def supplier(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=supplierClass(self.new_win)
 
 # ============Initialize the GUI===========
 if __name__=="__main__":
