@@ -1,12 +1,15 @@
 from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import ttk,messagebox
+import sqlite3
 class BillClass:
     def __init__(self, root):
         self.root = root
         self.root.geometry("1350x700+0+0")
         self.root.title("Inventory Management System | Developed By Hamdan")
         self.root.config(bg="white")
+#====================================Variables===========================
+        self.cart_list= []
 
         # ========================================== Title ===========================================
         self.icon_title = PhotoImage(file="images/logo1.png")
@@ -38,10 +41,10 @@ class BillClass:
 #==========================================Search label, Search Entry and Search Button=========================================================================
         lbl_search=Label(ProductFrame2,text="Product Name",font=("times new roman",15,"bold"),bg="white").place(x=2,y=45)
         txt_search=Entry(ProductFrame2,textvariable=self.var_search,font=("times new roman",15),bg="lightyellow").place(x=128,y=47,width=150,height=22)
-        btn_search=Button(ProductFrame2,text="Search",font=("goudy old style",15),bg="#2196f3",fg="white",cursor="hand2").place(x=285,y=45,width=100,height=25)
+        btn_search=Button(ProductFrame2,text="Search",command=self.search,font=("goudy old style",15),bg="#2196f3",fg="white",cursor="hand2").place(x=285,y=45,width=100,height=25)
 
 # =====================================SHOW ALL BUTTON==========================================================================================================================
-        btn_show_all=Button(ProductFrame2,text="Show All",font=("goudy old style",15),bg="#083531",fg="white",cursor="hand2").place(x=285,y=10,width=100,height=25)
+        btn_show_all=Button(ProductFrame2,text="Show All",command=self.show,font=("goudy old style",15),bg="#083531",fg="white",cursor="hand2").place(x=285,y=10,width=100,height=25)
 
 # =======================================================Supplier Details=========================================================================================================================
         # ========================================frame where details name are shown======================================================================================================================
@@ -57,20 +60,20 @@ class BillClass:
         scrolly.pack(side=RIGHT,fill=Y)
         scrollx.config(command=self.product_Table.xview)
         scrolly.config(command=self.product_Table.yview)
-        self.product_Table.heading("pid",text="PRODUCT ID")
+        self.product_Table.heading("pid",text="P-ID")
         self.product_Table.heading("name",text="NAME")
         self.product_Table.heading("price",text="PRICE")
-        self.product_Table.heading("qty",text="QUANTITY")
+        self.product_Table.heading("qty",text="QTY")
         self.product_Table.heading("status",text="STATUS")
         self.product_Table["show"]="headings"
         
-        self.product_Table.column("pid",width=80)
+        self.product_Table.column("pid",width=40)
         self.product_Table.column("name",width=90)
         self.product_Table.column("price",width=90)
-        self.product_Table.column("qty",width=90)
+        self.product_Table.column("qty",width=40)
         self.product_Table.column("status",width=90)   
         self.product_Table.pack(fill=BOTH,expand=1)
-        # self.product_Table.bind("<ButtonRelease-1>",self.get_data)
+        self.product_Table.bind("<ButtonRelease-1>",self.get_data)
         
         lbl_note=Label(ProductFrame1,text="Note: 'Enter 0 QTY to Remove the Product From Cart' ",font=("goudy old style",12),anchor='w',bg="white",fg="red").pack(side=BOTTOM,fill=X)
 #===========================================================VARIABLES FOR CUSTOMER SECTION=================================================================
@@ -128,7 +131,8 @@ class BillClass:
         cart_Frame=Frame(Cal_Cart_Frame,bd=3,relief=RIDGE)
         cart_Frame.place(x=280,y=8,width=245,height=342)
 #==========================================Title inside  Cal_Cart_Frame======================================================================================
-        cartTitle=Label(cart_Frame,text="Cart \t Total Product: [0]",font=("goudy old style",15),bg="lightgray").pack(side=TOP,fill=X)
+        self.cartTitle=Label(cart_Frame,text="Cart \t Total Product: 0",font=("goudy old style",15),bg="lightgray")
+        self.cartTitle.pack(side=TOP,fill=X)
         # ====================================================Scroll Details==============================================================================================================================
         scrolly=Scrollbar(cart_Frame,orient=VERTICAL)
         scrollx=Scrollbar(cart_Frame,orient=HORIZONTAL)
@@ -151,7 +155,7 @@ class BillClass:
         self.CartTable.column("qty",width=40)
         self.CartTable.column("status",width=90)   
         self.CartTable.pack(fill=BOTH,expand=1)
-        # self.CartTable.bind("<ButtonRelease-1>",self.get_data)
+        self.CartTable.bind("<ButtonRelease-1>",self.get_data)
         
 #========================================DEFINE VARIABLES FOR ADD CART WIDGET FRAME===================================================
         self.var_pid=StringVar()
@@ -163,7 +167,7 @@ class BillClass:
         Add_CartWidgetsFrame=Frame(self.root,bd=2,relief=RIDGE,bg="white")
         Add_CartWidgetsFrame.place(x=420,y=550,width=530,height=110)
 #==============================================LABEL AND ENTRY FIELD OF NAME INSIDE CART_FRAME===================================================================
-        lbl_p_name=Label(Add_CartWidgetsFrame,text="Product Frame",font=("times new roman",15),bg="white").place(x=5,y=5)
+        lbl_p_name=Label(Add_CartWidgetsFrame,text="Product Name",font=("times new roman",15),bg="white").place(x=5,y=5)
         txt_p_name=Entry(Add_CartWidgetsFrame,textvariable=self.var_pname,font=("times new roman",15),bg="lightyellow",state="readonly").place(x=5,y=35,width=190,height=22)
 #==============================================LABEL AND ENTRY FIELD OF PRICE INSIDE CART_FRAME===================================================================
 
@@ -176,14 +180,14 @@ class BillClass:
         txt_p_qty=Entry(Add_CartWidgetsFrame,textvariable=self.var_qty,font=("times new roman",15),bg="lightyellow").place(x=390,y=35,width=120,height=22)
         
         
-        self.lbl_inStock=Label(Add_CartWidgetsFrame,text="In Stock [9999]",font=("times new roman",15),bg="white")
+        self.lbl_inStock=Label(Add_CartWidgetsFrame,text="In Stock",font=("times new roman",15),bg="white")
         self.lbl_inStock.place(x=5,y=70)
         
         
 #===============================================Buttons For Clear Cart============================================================
         btn_clear_cart=Button(Add_CartWidgetsFrame,text="Clear",font=("times new roman",15,"bold"),bg="lightgray",cursor="hand2").place(x=180,y=70,width=150,height=30)
 #===============================================Buttons For Add | update  Cart============================================================
-        btn_add_cart=Button(Add_CartWidgetsFrame,text="Add | Update Cart",font=("times new roman",15,"bold"),bg="orange",cursor="hand2").place(x=340,y=70,width=180,height=30)
+        btn_add_cart=Button(Add_CartWidgetsFrame,text="Add | Update Cart",command=self.add_update_cart,font=("times new roman",15,"bold"),bg="orange",cursor="hand2").place(x=340,y=70,width=180,height=30)
         
 #============================================MAKE FRAME FOR BILL AREA SECTION===========================================================================================================
         billFrame=Frame(self.root,bd=2,relief=RIDGE,bg="white")
@@ -228,7 +232,7 @@ class BillClass:
                 
 #================================================FOOTER=========================================================================================================================================================
         footer=Label(self.root,text="IMS-Inventory Management System | Developed By Hamdan\nFor any Technical Issue Contact: +92-316-4780493",font=("times new roman",11),bg="#4d636d",fg="white",cursor="hand2").pack(side=BOTTOM,fill=X)
-                
+        self.show()
 #================================All Functions Defined Under=======================================================================
 #===============================functions defined for calculator==============================================================
     def get_input(self,num):
@@ -243,10 +247,102 @@ class BillClass:
         
         self.var_cal_input.set(eval(result))
         
-#=================================================
+#==========================================================OTHER PAGE FUNCTIONS DEFINED===================================================
+    def show(self):
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        try:
+            cur.execute("Select pid,name,price,qty,status from product where status='Active'")
+            rows=cur.fetchall()
+            self.product_Table.delete(*self.product_Table.get_children())
+            for row in rows:
+                self.product_Table.insert('',END,values=row)
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to: {str(ex)}",parent=self.root)
         
         
-    
+# ==================Add function to Search Bar and Search Button=============================================================================================================
+    def search(self):
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        try:
+            if self.var_search.get()=="":
+                messagebox.showerror("Error","Select input should be required",parent=self.root)
+            else:
+                cur.execute("Select pid,name,price,qty,status from product where name LIKE '%"+self.var_search.get()+"%' and status='Active'")
+                rows=cur.fetchall()
+                if len(rows)!=0:
+                    self.product_Table.delete(*self.product_Table.get_children())
+                    for row in rows:
+                        self.product_Table.insert('',END,values=row)
+                else:
+                    messagebox.showerror("Error","No record found!!!",parent=self.root)
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to: {str(ex)}",parent=self.root)
+        
+#====================================to get access of data on entry fields==================================================================================
+    def get_data(self,ev):
+        f=self.product_Table.focus()
+        content=(self.product_Table.item(f))
+        row=content['values']
+        # ======to set data on entry details=========
+        self.var_pid.set(row[0])
+        self.var_pname.set(row[1])
+        self.var_price.set(row[2])
+        self.lbl_inStock.config(text=f"In Stock [{str(row[3])}]")
+
+#===========================================================FUNCTION FOR ADD TO CART================================================================================================================================================================
+    def add_update_cart(self):
+            if self.var_pid.get()=='':
+                messagebox.showerror("Error","Please Select Product From List",parent=self.root)
+            elif self.var_qty.get()=='':
+                messagebox.showerror("Error","Quantity is Required",parent=self.root)
+            else:
+                price_cal=int(self.var_qty.get()) * float(self.var_price.get())
+                price_cal=float(price_cal)
+                cart_data=[self.var_pid.get(),self.var_pname.get(),price_cal,self.var_qty.get()]
+#========================FUNCTION FOR UPDATE CART============================================================================================================================================================================================================
+                present='no'
+                index_=0
+                for row in self.cart_list:
+                    if self.var_pid.get()==row[0]:
+                        present='yes'
+                        break
+                    index_+=1
+                if present=='yes':
+                    op=messagebox.askyesno('Confirm',"Product already Present\nDo you want to Update| Remove from the Cart List",parent=self.root)
+                    if op==True:
+                        if self.var_qty.get()=="0":
+                            self.cart_list.pop(index_)
+                        else:
+                            self.cart_list[index_][2]=price_cal #PRICE
+                            self.cart_list[index_][3]=self.var_qty.get() #qty
+                else:
+                    self.cart_list.append(cart_data)
+                    
+                self.show_cart()
+                self.bill_updates()
+#===================================================FUNCTION FOR UPDATE BILL==================================================================================================================================================================================================================
+    def bill_updates(self):
+        bill_amnt=0
+        net_pay=0
+        for row in self.cart_list:
+            bill_amnt=bill_amnt+float(row[2])
+            
+        net_pay=bill_amnt-((bill_amnt*5)/100)
+        self.lbl_amnt.config(text=f'Bill Amount\n{str(bill_amnt)}')
+        self.lbl_net_pay.config(text=f'Net Pay\n{str(net_pay)}')
+        self.cartTitle.config(text=f"Cart \t Total Product: {str(len(self.cart_list))}")
+
+#===================================================FUNCTIONS FOR SHOW ITEMS IN CART FRAME==================================================================================================================================================================================================================
+     
+    def show_cart(self):
+            try:  
+                self.CartTable.delete(*self.CartTable.get_children())
+                for row in self.cart_list:
+                    self.CartTable.insert('',END,values=row)
+            except Exception as ex:
+                messagebox.showerror("Error",f"Error due to: {str(ex)}",parent=self.root)
 # ============Initialize the GUI===========
 if __name__=="__main__":
     root = Tk()
