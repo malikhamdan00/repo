@@ -4,6 +4,7 @@ from employee import employeeClass
 from supplier import supplierClass
 from category import categoryClass
 from product import productClass
+from sales import salesClass
 class IMS:
     def __init__(self, root):
         self.root = root
@@ -46,7 +47,7 @@ class IMS:
         # =====================================================product-btn===========================================
         btn_product = Button(self.LeftMenu,text="Product",command=self.product,image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # =======================================================sales-btn============================================
-        btn_sales = Button(self.LeftMenu,text="Sales",image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
+        btn_sales = Button(self.LeftMenu,text="Sales",command=self.sales,image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         # ========================================================exit-btn==============================================
         btn_exit = Button(self.LeftMenu,text="Exit",image=self.icon_side,compound=LEFT,padx=5,anchor="w",font=("times new roman", 20,"bold"),bg="white",bd=3,cursor="hand2").pack(side=TOP,fill=X)
         
@@ -89,6 +90,11 @@ class IMS:
     def product(self):
         self.new_win=Toplevel(self.root)
         self.new_obj=productClass(self.new_win)
+
+# ===========================================Function for sales menu======================================================
+    def sales(self):
+        self.new_win=Toplevel(self.root)
+        self.new_obj=salesClass(self.new_win)
 
 # ============Initialize the GUI===========
 if __name__=="__main__":
