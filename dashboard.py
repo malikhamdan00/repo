@@ -1,5 +1,6 @@
 from tkinter import *
 from PIL import Image, ImageTk
+import time
 from employee import employeeClass
 from supplier import supplierClass
 from category import categoryClass
@@ -70,7 +71,7 @@ class IMS:
         
         # ==========================================================Footer==========================================
         lbl_footer= Label(self.root,text="IMS-Inventory Management System | Developed By Hamdan\nFor any Technical Issue Contact: +92-316-4780493",font=("times new roman", 12),bg="#4d636d",fg="white",).pack(side=BOTTOM,fill=X)
-        
+        self.update_date_time()
         
 # ==========================================Function for employee enu=======================================================================
     def employee(self):
@@ -95,6 +96,14 @@ class IMS:
     def sales(self):
         self.new_win=Toplevel(self.root)
         self.new_obj=salesClass(self.new_win)
+        
+#=================================================SET AUTO DATE AND TIME===========================================================================================
+    def update_date_time(self):
+        time_= time.strftime("%I:%M:%S")
+        date_= time.strftime("%d-%m-%Y")
+        self.lbl_clock.config(text=f" Welcome to Inventory Management System\t\t Date: {str(date_)}\t\t Time: {str(time_)}")
+        self.lbl_clock.after(200,self.update_date_time)
+
 
 # ============Initialize the GUI===========
 if __name__=="__main__":
