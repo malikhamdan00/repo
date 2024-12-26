@@ -1,6 +1,9 @@
 from tkinter import *
 from PIL import Image, ImageTk
 import time
+from tkinter import messagebox
+import sqlite3
+import os
 from employee import employeeClass
 from supplier import supplierClass
 from category import categoryClass
@@ -71,7 +74,7 @@ class IMS:
         
         # ==========================================================Footer==========================================
         lbl_footer= Label(self.root,text="IMS-Inventory Management System | Developed By Hamdan\nFor any Technical Issue Contact: +92-316-4780493",font=("times new roman", 12),bg="#4d636d",fg="white",).pack(side=BOTTOM,fill=X)
-        self.update_date_time()
+        self.update_content()
         
 # ==========================================Function for employee enu=======================================================================
     def employee(self):
@@ -97,12 +100,38 @@ class IMS:
         self.new_win=Toplevel(self.root)
         self.new_obj=salesClass(self.new_win)
         
-#=================================================SET AUTO DATE AND TIME===========================================================================================
-    def update_date_time(self):
-        time_= time.strftime("%I:%M:%S")
-        date_= time.strftime("%d-%m-%Y")
-        self.lbl_clock.config(text=f" Welcome to Inventory Management System\t\t Date: {str(date_)}\t\t Time: {str(time_)}")
-        self.lbl_clock.after(200,self.update_date_time)
+
+    def update_content(self):
+        con=sqlite3.connect(database=r'ims.db')
+        cur=con.cursor()
+        try:
+            cur.execute("select * from product")
+            product=cur.fetchall()
+            self.lbl_product.config(text=f'Total Products\n[ {str(len(product))} ]')
+            
+            cur.execute("select * from supplier")
+            supplier=cur.fetchall()
+            self.lbl_supplier.config(text=f'Total Suppliers\n[ {str(len(supplier))} ]')
+            
+            cur.execute("select * from category")
+            category=cur.fetchall()
+            self.lbl_category.config(text=f'Total Category\n[ {str(len(category))} ]')
+            
+            cur.execute("select * from employee")
+            employee=cur.fetchall()
+            self.lbl_employee.config(text=f'Total Employee\n[ {str(len(employee))} ]')
+            
+            bill=len(os.listdir('bill'))
+            self.lbl_sales.config(text=f'Total Sales [{str(bill)}]')
+            
+            
+            time_= time.strftime("%I:%M:%S")
+            date_= time.strftime("%d-%m-%Y")
+            self.lbl_clock.config(text=f" Welcome to Inventory Management System\t\t Date: {str(date_)}\t\t Time: {str(time_)}")
+            self.lbl_clock.after(200,self.update_content)
+            
+        except Exception as ex:
+            messagebox.showerror("Error",f"Error due to: {str(ex)}",parent=self.root)
 
 
 # ============Initialize the GUI===========
