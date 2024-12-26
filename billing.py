@@ -20,7 +20,7 @@ class BillClass:
         title = Label(self.root,text="Inventory Management System",image=self.icon_title,compound=LEFT,font=("times new roman", 40, "bold"),bg="#010c48",fg="white",anchor="w",padx=20,).place(x=0, y=0, relwidth=1, height=70)
 
         # ===================================== Logout Button =========================================
-        btn_logout = Button(self.root,text="Logout",font=("times new roman", 15, "bold"),bg="yellow",cursor="hand2",).place(x=1150, y=10, height=50, width=150)
+        btn_logout = Button(self.root,text="Logout",command=self.logout,font=("times new roman", 15, "bold"),bg="yellow",cursor="hand2",).place(x=1150, y=10, height=50, width=150)
 
         # ========================================== Clock ==============================================
         self.lbl_clock = Label(self.root,text=" Welcome to Inventory Management System\t\t Date: DD-MM-YYYY\t\t Time: HH:MM:ss",font=("times new roman", 15),bg="#4d636d",fg="white",)
@@ -391,13 +391,13 @@ class BillClass:
         self.invoice=int(time.strftime("%H%M%S"))+int(time.strftime("%d%m%Y"))
         bill_top_temp=f'''
 \t\t  BARA-SHOES
-\tPhone No. +92-309-9420551, Lahore-50040
+\tPhone: +92-309-9420551, Lahore-50040
 {str("="*47)}
  Customer Name: {self.var_cname.get()}
  Ph NO: {self.var_contact.get()}
- Bill No. {str(self.invoice)}\t\t\tDate: {str(time.strftime("%d/%m/%Y"))}
+ Bill No. {str(self.invoice)} | \tDate: {str(time.strftime("%d/%m/%Y"))}
 {str("="*47)}
- Product Name\t\t\tQTY\tPrice
+ Product Name\t\t QTY\t  Price
 {str("="*47)}
         '''
         self.txt_bill_area.delete('1.0',END)
@@ -427,7 +427,7 @@ class BillClass:
                     status='Active'
                 price=float(row[2])#*int(row[3])
                 price=str(price)
-                self.txt_bill_area.insert(END,"\n "+name+"\t\t\t"+row[3]+"\tRs."+price)
+                self.txt_bill_area.insert(END,"\n "+name+"\t \t"+row[3]+"\t  Rs."+price)
                 #========================================Update quantity in product table============================================================================================
                 cur.execute('Update product set qty=?,status=? where pid=?',(
                     qty,
@@ -477,6 +477,10 @@ class BillClass:
 
         else:
             messagebox.showerror('Print',"Please generate bill, to print receipt",parent=self.root)
+            
+    def logout(self):
+            self.root.destroy()
+            os.system("python login.py")
             
 # ============Initialize the GUI===========
 if __name__=="__main__":

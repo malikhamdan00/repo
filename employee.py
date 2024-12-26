@@ -65,7 +65,7 @@ class employeeClass:
         txt_doj=Entry(self.root,textvariable=self.var_doj,font=("goudy old style",15),bg="lightyellow").place(x=850,y=190,width=180)
         
         # ==============================================Row 3=========================================
-        lbl_cnic=Label(self.root,text="CNIC",font=("goudy old style",15),bg="white").place(x=50,y=230)
+        lbl_cnic=Label(self.root,text="CNIC | Email",font=("goudy old style",15),bg="white").place(x=25,y=230)
         lbl_pass=Label(self.root,text="Password",font=("goudy old style",15),bg="white").place(x=350,y=230)
         lbl_utype=Label(self.root,text="User Type",font=("goudy old style",15),bg="white").place(x=750,y=230)
         
@@ -108,7 +108,7 @@ class employeeClass:
         scrolly.config(command=self.EmployeeTable.yview)
         self.EmployeeTable.heading("eid",text="EMP ID")
         self.EmployeeTable.heading("name",text="NAME")
-        self.EmployeeTable.heading("cnic",text="CNIC")
+        self.EmployeeTable.heading("cnic",text="CNIC | Email")
         self.EmployeeTable.heading("gender",text="GENDER")
         self.EmployeeTable.heading("contact",text="CONTACT")
         self.EmployeeTable.heading("dob",text="D.O.B")
