@@ -2,6 +2,8 @@ from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import ttk,messagebox
 import time
+import os
+import tempfile
 import sqlite3
 class BillClass:
     def __init__(self, root):
@@ -11,6 +13,7 @@ class BillClass:
         self.root.config(bg="white")
 #====================================Variables===========================
         self.cart_list= []
+        self.chk_print=0
 
         # ========================================== Title ===========================================
         self.icon_title = PhotoImage(file="images/logo1.png")
@@ -218,7 +221,7 @@ class BillClass:
         # self.lbl_net_pay.place(x=246,y=5,width=160,height=70)
         
 #=============================================BUTTON FOR PRINT RECEIPT ======================================================================================================================================
-        btn_print=Button(billMenuFrame,text="Print",font=("goudy old style",15,"bold"),bg="blue",fg="white",cursor="hand2")
+        btn_print=Button(billMenuFrame,text="Print",command=self.print_bill,font=("goudy old style",15,"bold"),bg="blue",fg="white",cursor="hand2")
         btn_print.place(x=2,y=80,width=120,height=50)
         
 #=============================================BUTTON FOR CLEAR GENERATED ALL=======================================================================================================================================
@@ -382,6 +385,7 @@ class BillClass:
             fp.write(self.txt_bill_area.get('1.0',END))
             fp.close()
             messagebox.showinfo('Saved',"Bill has been generated and saved Successfully",parent=self.root)
+            self.chk_print=1
 #================================================================TOP PART OF BILL=============================================================================================================
     def bill_top(self):
         self.invoice=int(time.strftime("%H%M%S"))+int(time.strftime("%d%m%Y"))
@@ -455,13 +459,25 @@ class BillClass:
         self.clear_cart()
         self.show()
         self.show_cart()
+
 #=================================================SET AUTO DATE AND TIME===========================================================================================
     def update_date_time(self):
         time_= time.strftime("%I:%M:%S")
         date_= time.strftime("%d-%m-%Y")
         self.lbl_clock.config(text=f" Welcome to Inventory Management System\t\t Date: {str(date_)}\t\t Time: {str(time_)}")
         self.lbl_clock.after(200,self.update_date_time)
+        
+#===========================================================TO ADD FUNCTIONS FOR PRINT BUTTON================================================================================
+    def print_bill(self):
+        if self.chk_print==1:
+            messagebox.showinfo('Print',"Please wait white printing",parent=self.root)
+            new_file=tempfile.mktemp('.txt')
+            open(new_file,'w').write(self.txt_bill_area.get('1.0',END))
+            os.startfile(new_file,'print')
 
+        else:
+            messagebox.showerror('Print',"Please generate bill, to print receipt",parent=self.root)
+            
 # ============Initialize the GUI===========
 if __name__=="__main__":
     root = Tk()
