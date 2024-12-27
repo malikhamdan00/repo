@@ -199,7 +199,7 @@ class BillClass:
 #=================================================ADD SCROLL FUNCTION TO CUSTOMER BILL FRAME=======================================================================================================
         scrolly=Scrollbar(billFrame,orient=VERTICAL)
         scrolly.pack(side=RIGHT,fill=Y)
-        self.txt_bill_area=Text(billFrame,yscrollcommand=scrolly.set)
+        self.txt_bill_area=Text(billFrame,yscrollcommand=scrolly.set,font=("Arial",7))
         self.txt_bill_area.pack(fill=BOTH,expand=1)
         scrolly.config(command=self.txt_bill_area.yview)     
         
@@ -407,8 +407,8 @@ class BillClass:
     def bill_bottom(self):
         bill_bottom_temp=f'''
 {str("="*47)}
- Bill Amount:-\t\t\t\tRs.{self.bill_amnt}
- Net Pay:-\t\t\t\tRs.{self.bill_amnt}
+ Bill Amount:-\t\t  Rs.{self.bill_amnt}
+ Net Pay:-\t\t  Rs.{self.bill_amnt}
 {str("="*47)}\n
         '''
         self.txt_bill_area.insert(END,bill_bottom_temp)
