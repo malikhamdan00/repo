@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 from tkinter import ttk,messagebox
 import time
 import os
+import inflect
 import tempfile
 import sqlite3
 class BillClass:
@@ -369,36 +370,41 @@ class BillClass:
 
 #================================GENERATING BILL LAYOUT AND FUNCTIONALITY=============================================================================================================
     def generate_bill(self):
-        if self.var_cname.get()=='' or self.var_contact.get()=='':
-            messagebox.showerror("Error",f"Customer Details are Required",parent=self.root)
-        elif len(self.cart_list)==0:
-            messagebox.showerror("Error",f"Please Add Product To The Cart!!!",parent=self.root)
-        else:
-            #====Bill Top======
-            self.bill_top()
-            #=====Bill Middle===
-            self.bill_middle()
-            #====Bill Bottom
-            self.bill_bottom()
-            #====FOR SAVE RECEIPT IN FOLDER FOR DATA COLLECTION===========================
-            fp=open(f'bill/{str(self.invoice)}.txt','w')
-            fp.write(self.txt_bill_area.get('1.0',END))
-            fp.close()
-            messagebox.showinfo('Saved',"Bill has been generated and saved Successfully",parent=self.root)
-            self.chk_print=1
+            if self.var_cname.get() == '' or self.var_contact.get() == '':
+                    messagebox.showerror("Error", "Customer Details are Required", parent=self.root)
+            elif len(self.cart_list) == 0:
+                    messagebox.showerror("Error", "Please Add Product To The Cart!!!", parent=self.root)
+            else:
+                    self.bill_top()
+                    self.bill_middle()
+                    self.bill_bottom()
+                    self.bill_last()
+                    try:
+                            os.makedirs('bill', exist_ok=True)  # Ensure the directory exists
+                            file_path = f'bill/{str(self.invoice)}.txt'
+                            with open(file_path, "w", encoding="utf-8") as fp:
+                                    bill_content = self.txt_bill_area.get('1.0', END).strip()
+                                    if not bill_content:
+                                            raise ValueError("Bill content is empty.")
+                                    fp.write(bill_content)
+                                    messagebox.showinfo('Saved', f"Bill has been generated and saved successfully as {file_path}", parent=self.root)
+                                    self.chk_print = 1
+                    except Exception as ex:
+                        messagebox.showerror("Error", f"Error saving bill: {str(ex)}", parent=self.root)
+
 #================================================================TOP PART OF BILL=============================================================================================================
     def bill_top(self):
         self.invoice=int(time.strftime("%H%M%S"))+int(time.strftime("%d%m%Y"))
         bill_top_temp=f'''
-\t\t  BARA-SHOES
-\tPhone: +92-309-9420551, Lahore-50040
-{str("="*47)}
+\t\t\tBARA-SHOES
+  Phone: +92-309-9420551, Lahore-50040
+{str("="*43)}
  Customer Name: {self.var_cname.get()}
  Ph NO: {self.var_contact.get()}
  Bill No. {str(self.invoice)} | \tDate: {str(time.strftime("%d/%m/%Y"))}
-{str("="*47)}
+{str("="*43)}
  Product Name\t\t QTY\t  Price
-{str("="*47)}
+{str("="*43)}
         '''
         self.txt_bill_area.delete('1.0',END)
         self.txt_bill_area.insert('1.0',bill_top_temp)
@@ -406,10 +412,10 @@ class BillClass:
 
     def bill_bottom(self):
         bill_bottom_temp=f'''
-{str("="*47)}
+{str("="*43)}
  Bill Amount:-\t\t  Rs.{self.bill_amnt}
  Net Pay:-\t\t  Rs.{self.bill_amnt}
-{str("="*47)}\n
+{str("="*43)}
         '''
         self.txt_bill_area.insert(END,bill_bottom_temp)
 #================================================================MIDDLE PART OF BILL=============================================================================================================
@@ -427,7 +433,7 @@ class BillClass:
                     status='Active'
                 price=float(row[2])#*int(row[3])
                 price=str(price)
-                self.txt_bill_area.insert(END,"\n "+name+"\t \t"+row[3]+"\t  Rs."+price)
+                self.txt_bill_area.insert(END,"\n"+name+"\t \t"+row[3]+"\t  Rs."+price)
                 #========================================Update quantity in product table============================================================================================
                 cur.execute('Update product set qty=?,status=? where pid=?',(
                     qty,
@@ -439,6 +445,66 @@ class BillClass:
             self.show()
         except Exception as ex:
                 messagebox.showerror("Error",f"Error due to: {str(ex)}",parent=self.root)
+                
+                
+
+#================================================================LAST PART OF BILL=============================================================================================================
+
+    def bill_last(self):
+            p = inflect.engine()
+            try:
+                if not hasattr(self, 'bill_amnt'):
+                        raise ValueError("The attribute 'bill_amnt' does not exist.")
+                total_amount = self.bill_amnt
+
+                if total_amount is None or not isinstance(total_amount, (int, float)):
+                        raise ValueError("Total amount is not set or invalid.")
+
+                # Convert total_amount to words
+                if isinstance(total_amount, int) or total_amount.is_integer():
+                        total_in_words = p.number_to_words(int(total_amount))
+                else:
+                        total_in_words = p.number_to_words(total_amount)
+
+                if not total_in_words.strip():
+                        raise ValueError("Total amount in words is empty.")
+
+                # Handle word placement
+                words = total_in_words.split()
+                if len(words) <= 3:
+                        line1 = " ".join(words).strip().capitalize()
+                        line2 = ""
+                else:
+                        mid_index = len(words) // 2
+                        line1 = " ".join(words[:mid_index]).strip().capitalize()
+                        line2 = " ".join(words[mid_index:]).strip()
+                        
+                bill_last_temp = f'''
+   {line1}
+   {line2} Only
+{"="*43}
+ خریدے گئے اشیاء تبدیل نہیں کیے جائیں گے
+{"-"*43}
+   THANK YOU FOR SHOPPING WITH US!
+     Visit again for great deals & offers!
+    '''
+
+        # Insert the bill into the text widget
+                if hasattr(self, 'txt_bill_area') and self.txt_bill_area:
+                        self.txt_bill_area.insert("end", bill_last_temp)
+                else:
+                        raise ValueError("Text widget for bill display (txt_bill_area) is not defined.")
+
+            except Exception as e:
+                print(f"Error in bill_last function: {e}")
+                if hasattr(self, 'txt_bill_area') and self.txt_bill_area:
+                        self.txt_bill_area.insert("end", f"\nError: {str(e)}")
+
+
+
+
+
+
 #=============================================FUNCTION FOR CLEAR CART========================================================================================
     def clear_cart(self):
         self.var_pid.set('')
@@ -469,15 +535,20 @@ class BillClass:
         
 #===========================================================TO ADD FUNCTIONS FOR PRINT BUTTON================================================================================
     def print_bill(self):
-        if self.chk_print==1:
-            messagebox.showinfo('Print',"Please wait white printing",parent=self.root)
-            new_file=tempfile.mktemp('.txt')
-            open(new_file,'w').write(self.txt_bill_area.get('1.0',END))
-            os.startfile(new_file,'print')
+            if self.chk_print == 1:
+                    try:
+                            messagebox.showinfo('Print', "Bill is ready to be printed. Click OK to proceed.", parent=self.root)
+                            new_file = tempfile.mktemp('.txt')
+                            with open(new_file, 'w', encoding='utf-8') as f:
+                                    f.write(self.txt_bill_area.get('1.0',END).strip())
+                            os.startfile(new_file, 'print')
+                                    
+                    except Exception as ex:
+                            messagebox.showerror('Error', f"Error while printing: {str(ex)}", parent=self.root)
+            else:
+                messagebox.showerror('Print', "Please generate a bill to print the receipt", parent=self.root)
 
-        else:
-            messagebox.showerror('Print',"Please generate bill, to print receipt",parent=self.root)
-            
+#========================================================================================================
     def logout(self):
             self.root.destroy()
             os.system("python login.py")
